@@ -6,7 +6,7 @@ import {
     type SignalDataTypeMap,
     type AuthenticationState
 } from '@whiskeysockets/baileys'
-import { SessionModel } from '../Database/Models'
+import { SessionModel } from '../models'
 
 export class AuthenticationFromDatabase {
     constructor(private readonly sessionId: string) {}
