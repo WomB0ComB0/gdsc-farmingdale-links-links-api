@@ -1,14 +1,14 @@
-import { LinksController } from '../controllers/LinksController';
-import { auth } from "../middleware/AuthMiddleware";
+import LinksController from '@/controllers/LinksController';
 import BaseRoutes from './BaseRouter';
-
+import validate from '@/helper/validate';
+import { createLinksSchema, updateLinksSchema } from '@/validators/LinksSchema';
 class LinksRouter extends BaseRoutes {
-  routes(): void {
-    this.router.get("/", LinksController.index);
-    this.router.get("/:id", LinksController.show);
-    this.router.post("/", auth, LinksController.store);
-    this.router.put("/:id", auth, LinksController.update);
-    this.router.delete("/:id", auth, LinksController.delete);
+  public routes(): void {
+    this.router.get("/", LinksController.getLinks);
+    this.router.get("/:id", LinksController.getLink);
+    this.router.post("/", validate(createLinksSchema), LinksController.postLink);
+    this.router.put("/:id", validate(updateLinksSchema), LinksController.putLink);
+    this.router.delete("/:id", LinksController.deleteLink);
   }
 }
 

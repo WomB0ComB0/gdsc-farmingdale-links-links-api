@@ -1,3 +1,3 @@
 export * from './ApiKeyMiddleware'
-export * from './errors'
+export * from './Errors'
 export * from './ValidatorMiddleware'

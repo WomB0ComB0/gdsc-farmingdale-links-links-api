@@ -1,8 +1,9 @@
 import express, { type Application, type NextFunction, type Request, type Response } from 'express'
-import Database from './config/database'
-import AuthenticationRouter from './routes/AuthenticationRouter'
-import LinksRouter from './routes/LinksRouter'
+import { rateLimit } from 'express-rate-limit'
 import { join } from 'path'
+import Database from '@/config/database'
+import LinksRouter from '@/routes/LinksRouter'
+import { errorHandler } from '@/middlewares'
 class App {
   public app: Application
 
@@ -15,10 +16,17 @@ class App {
 
   private readonly path = join(__dirname, '..', '..', 'static')
 
+  private readonly limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+	  limit: 100,
+	  standardHeaders: 'draft-7',
+	  legacyHeaders: false,
+  })
+
   protected routes (): void {
-    this.app.use('/', express.static(this.path))
-    this.app.use('/api/links', LinksRouter)
-    this.app.use('/api/auth', AuthenticationRouter)
+    this.app.use('/', this.limiter, express.static(this.path))
+    this.app.use('/api/links', this.limiter, LinksRouter)
+    this.app.use(errorHandler)
   }
 
   protected databaseSync (): void {

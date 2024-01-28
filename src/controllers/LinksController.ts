@@ -1,115 +1,60 @@
-export class LinksController {
-  constructor(private readonly client: Client ) {
-    Config()
-  }
+import { type Request, type Response } from "express";
+import { Links } from "@/models/LinksModel";
+import { LinksRepo } from "@/repository/LinksRepo";
 
-  private readonly links: LinksModel
-
-  public getLinks = async (req: Request, res: Response): Promise<Response> => {
-    const data = req.query
-    const links = await this.links.getLinks(data)
-    if (!links) {
-      return res.status(404).json({ message: 'not found' })
-    }
-    return res.status(200).json(links)
-  }
-
-  public getLink = async (req: Request, res: Response): Promise<Response> => {
+class LinksController {
+  async postLink(req: Request, res: Response) {
     try {
-      await this.client.waitForSocketOpen()
-    } catch {
-      return res.status(500).json({ message: 'internal server error' })
-    }
-    const { id } = req.params
-    const link = await this.links.getLink(id)
-    if (!link) {
-      return res.status(404).json({ message: 'not found' })
-    }
-    return res.status(200).json(link)
+      const links = new Links()
+      const { image, link, name, description } = req.body;
+      links.image = image
+      links.link = link
+      links.name = name
+      links.description = description
+      await new LinksRepo().postLink(links);
+      res.status(201).json({ status: "Created!", message: "Link created!" });
+    } catch (error) { res.status(500).json({ status: "Internal Server Error!", message: "Internal Server Error!", }); }
   }
 
-  public createLink = async (req: Request, res: Response): Promise<Response> => {
-    const data = req.body
-    const link = await this.links.createLink(data)
-    if (!link) {
-      return res.status(500).json({ message: 'internal server error' })
-    }
-    return res.status(201).json(link)
+  async putLink(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params['id'])
+      const links = new Links()
+
+      const { image, link, name, description } = req.body;
+      links.id = id
+      links.image = image
+      links.link = link
+      links.name = name
+      links.description = description
+
+      await new LinksRepo().putLink(links);
+      res.status(200).json({ status: "Updated!", message: "Link updated!" });
+    } catch (error) { res.status(500).json({ status: "Internal Server Error!", message: "Internal Server Error!", }); }
   }
 
-  public updateLink = async (req: Request, res: Response): Promise<Response> => {
-    const { id } = req.params
-    const data = req.body
-    const link = await this.links.updateLink(id, data)
-    if (!link) {
-      return res.status(404).json({ message: 'not found' })
-    }
-    return res.status(200).json(link)
+  async deleteLink(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params['id'])
+      await new LinksRepo().deleteLink(id);
+      res.status(200).json({ status: "Deleted!", message: "Link deleted!" });
+    } catch (error) { res.status(500).json({ status: "Internal Server Error!", message: "Internal Server Error!", }); }
   }
 
-  public delLink = async (req: Request, res: Response): Promise<Response> => {
-    const { id } = req.params
-    const link = await this.links.deleteLink(id)
-    if (!link) {
-      return res.status(404).json({ message: 'not found' })
-    }
-    return res.status(200).json(link)
+  async getLink(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params['id'])
+      const link = await new LinksRepo().getLink(id);
+      res.status(200).json({ status: "Ok!", message: "Link found!", data: link });
+    } catch (error) { res.status(500).json({ status: "Internal Server Error!", message: "Internal Server Error!", }); }
   }
 
-      private readonly getOTPFromId = async (id: number): Promise<OneTimePasswordModel | null> => {
-        return await this.otp.findOne({
-            where: {
-                id
-            }
-        })
-    }
-
-    private readonly getOTPFromNumber = async (phoneNumber: number): Promise<OneTimePasswordModel | null> => {
-        return await this.otp.findOne({
-            where: {
-                [Op.and]: [
-                    { phoneNumber },
-                    { isUsed: false },
-                    { attempt: { [Op.lt]: this.attempts } },
-                    { createdAt: { [Op.gte]: new Date(Date.now() - 60000 * this.lifetime) } }
-                ]
-            }
-        })
-    }
-
-    private readonly createOTP = async (phoneNumber: number, otpCode: number): Promise<void> => {
-        await this.otp.create({
-            phoneNumber,
-            otpCode,
-            attempt: 0,
-            isUsed: false
-        })
-    }
-
-    private readonly updateOTP = async (phoneNumber: number, attempt: number, isUsed: boolean): Promise<void> => {
-        await this.otp.update(
-            {
-                attempt,
-                isUsed
-            },
-            {
-                where: {
-                    [Op.and]: [
-                        { phoneNumber },
-                        { isUsed: false },
-                        { attempt: { [Op.lte]: this.attempts } },
-                        { createdAt: { [Op.gte]: new Date(Date.now() - 60000 * 2) } }
-                    ]
-                }
-            }
-        )
-    }
-
-    private readonly deleteOTP = async (phoneNumber: number): Promise<void> => {
-        await this.otp.destroy({
-            where: {
-                phoneNumber
-            }
-        })
-    }
+  async getLinks(_req: Request, res: Response) {
+    try {
+      const links = await new LinksRepo().getLinks();
+      res.status(200).json({ status: "Ok!", message: "Links found!", data: links });
+    } catch (error) { res.status(500).json({ status: "Internal Server Error!", message: "Internal Server Error!", }); }
+  }
 }
+
+export default new LinksController();
