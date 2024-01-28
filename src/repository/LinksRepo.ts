@@ -1,4 +1,4 @@
-import { Links } from "@/models/LinksModel";
+import { Links } from "../models/LinksModel";
 
 interface ILinksRepo {
   postLink(data: Links): Promise<void>

@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
-import { Links } from "@/models/LinksModel";
-import { LinksRepo } from "@/repository/LinksRepo";
+import { Links } from "../models/LinksModel";
+import { LinksRepo } from "../repository/LinksRepo";
 
 class LinksController {
   async postLink(req: Request, res: Response) {

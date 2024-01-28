@@ -22,9 +22,6 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
   },
   "include": ["./src/**/*.ts"],
   "exclude": ["node_modules"]

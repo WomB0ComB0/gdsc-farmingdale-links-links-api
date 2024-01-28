@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
-import { Links } from "@/models/LinksModel";
-import { Users } from "@/models/Users";
+import { Links } from "../models/LinksModel";
+import { Users } from "../models/Users";
 class Database {
   public sequelize: Sequelize | undefined;
 

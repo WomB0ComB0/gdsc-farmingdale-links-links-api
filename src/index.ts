@@ -1,9 +1,9 @@
 import express, { type Application, type NextFunction, type Request, type Response } from 'express'
 import { rateLimit } from 'express-rate-limit'
 import { join } from 'path'
-import Database from '@/config/database'
-import LinksRouter from '@/routes/LinksRouter'
-import { errorHandler } from '@/middlewares'
+import Database from './config/database'
+import LinksRouter from './routes/LinksRouter'
+import { errorHandler } from './middlewares'
 import AuthenticationRouter from './routes/AuthenticationRouter'
 class App {
   public app: Application
