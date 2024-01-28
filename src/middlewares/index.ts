@@ -1,3 +1,3 @@
 export * from './ApiKeyMiddleware'
 export * from './Errors'
-export * from './ValidatorMiddleware'
+export * from './AuthMiddleware'

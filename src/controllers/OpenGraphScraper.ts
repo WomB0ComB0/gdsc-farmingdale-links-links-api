@@ -5,12 +5,8 @@ const options = { url: 'https://mvp.microsoft.com/en-US/studentambassadors/profi
 
 ogs(options)
   .then((data) => {
-    const { error, html, result, response } = data;
-    // console.log('error:', error);
-    // console.log('html:', html);
-    
-    console.log('result:', result.ogImage[0].url);
-    // console.log('response:', response);
+    const { result } = data;
+    console.log('result:', result.ogImage?.[0]?.url);
   })
   .catch((err) => {
     console.log(err)

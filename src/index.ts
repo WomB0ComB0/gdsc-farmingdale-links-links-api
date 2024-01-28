@@ -4,6 +4,7 @@ import { join } from 'path'
 import Database from '@/config/database'
 import LinksRouter from '@/routes/LinksRouter'
 import { errorHandler } from '@/middlewares'
+import AuthenticationRouter from './routes/AuthenticationRouter'
 class App {
   public app: Application
 
@@ -26,6 +27,7 @@ class App {
   protected routes (): void {
     this.app.use('/', this.limiter, express.static(this.path))
     this.app.use('/api/links', this.limiter, LinksRouter)
+    this.app.use('/api/auth', AuthenticationRouter)
     this.app.use(errorHandler)
   }
 
