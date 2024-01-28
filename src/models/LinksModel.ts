@@ -20,14 +20,14 @@ export class Links extends Model {
   id!: number;
   
   @Column({
-    type: DataType.STRING(100),
+    type: DataType.STRING(255),
     field: Links.VAR_IMAGE,
   })
   image!: string;
 
   
   @Column({
-    type: DataType.STRING(100),
+    type: DataType.STRING(255),
     field: Links.VAR_LINK,
   })
   link!: string;
@@ -39,7 +39,7 @@ export class Links extends Model {
   name!: string;
 
   @Column({
-    type: DataType.STRING(100),
+    type: DataType.STRING(255),
     field: Links.VAR_DESCRIPTION,
   })
   description!: string;

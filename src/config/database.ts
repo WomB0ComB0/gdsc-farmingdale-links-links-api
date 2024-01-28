@@ -1,6 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
 import { Links } from "../models/LinksModel";
-import { Users } from "../models/Users";
 class Database {
   public sequelize: Sequelize | undefined;
 
@@ -22,7 +21,7 @@ class Database {
       host: this.POSTGRES_HOST,
       port: this.POSTGRES_PORT,
       dialect: "postgres",
-      models:[Links, Users]
+      models:[Links]
     });
 
     await this.sequelize
