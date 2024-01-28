@@ -1,8 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
-import * as dotenv from "dotenv";
 import { Users } from "../models/Users";
-import { Note } from "../models/Note";
-dotenv.config();
+import { Links } from "../models/LinksModel";
 
 class Database {
   public sequelize: Sequelize | undefined;
@@ -25,7 +23,7 @@ class Database {
       host: this.POSTGRES_HOST,
       port: this.POSTGRES_PORT,
       dialect: "postgres",
-      models:[Note,Users]
+      models:[Links, Users]
     });
 
     await this.sequelize
@@ -35,7 +33,7 @@ class Database {
           "✅ PostgreSQL Connection has been established successfully."
         );
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.log("❌ Unable to connect to the PostgreSQL database:", err);
       });
   }

@@ -1,38 +1,46 @@
-module.exports = {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": "standard-with-typescript",
-    "overrides": [
+const path = require('path')
+/** @type {import("eslint").Linter.Config} */
+const config = {
+    overrides: [
         {
             "env": {
-                "node": true
+                "browser": true,
+                "es2021": true
             },
-            "files": [
-                ".eslintrc.{js,cjs}"
+            "extends": "standard-with-typescript",
+            "overrides": [
+                {
+                    "env": {
+                        "node": true
+                    },
+                    "files": [
+                        ".eslintrc.{js,cjs}"
+                    ],
+                    "parserOptions": {
+                        "sourceType": "script"
+                    }
+                }
             ],
             "parserOptions": {
-                "sourceType": "script"
+                "ecmaVersion": "latest",
+                "sourceType": "module"
+            },
+            "plugins": ["unused-imports"],
+            "rules": {
+                "no-unused-vars": "off",
+                "unused-imports/no-unused-imports": "error",
+                "unused-imports/no-unused-vars": [
+                    "warn",
+                    {
+                        "vars": "all",
+                        "varsIgnorePattern": "^_",
+                        "args": "after-used",
+                        "argsIgnorePattern": "^_"
+                    }
+                ]
             }
         }
-    ],
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
-    },
-    "plugins": ["unused-imports"],
-    "rules": {
-        "no-unused-vars": "off",
-        "unused-imports/no-unused-imports": "error",
-        "unused-imports/no-unused-vars": [
-            "warn",
-            {
-                "vars": "all",
-                "varsIgnorePattern": "^_",
-                "args": "after-used",
-                "argsIgnorePattern": "^_"
-            }
-        ]
-    }
+    ]
 }
+
+module.exports = config
