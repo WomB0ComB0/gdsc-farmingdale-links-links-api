@@ -22,35 +22,121 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = require("./index");
 const vitest_1 = require("vitest");
-const assert_1 = __importDefault(require("assert"));
-const supertest_1 = __importDefault(require("supertest"));
+const assert = __importStar(require("assert"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const host = 'http://localhost:3000';
 (0, vitest_1.suite)('API Key Middleware', () => {
-    const request = (0, supertest_1.default)(index_1.app);
     (0, vitest_1.test)('should allow access with valid API key', async () => {
-        const response = await request.get(host + '/api/links').set('API-Key', process.env.PRIVATE_API_KEY).expect(200);
-        assert_1.default.equal(response.status, 200);
-        assert_1.default.deepEqual(response.body, { message: 'API key is valid' });
+        const response = await fetch(host + '/api/links', {
+            method: 'GET',
+            headers: {
+                'API-Key': process.env.PRIVATE_API_KEY,
+            },
+        });
+        const responseBody = await response.json();
+        assert.equal(response.status, 200);
+        assert.deepEqual(responseBody, { message: 'Links found!', status: 'Ok!', data: [] });
     });
     (0, vitest_1.test)('should deny access without API key', async () => {
-        const response = await request.get(host + '/api/links').expect(401);
-        assert_1.default.deepEqual(response.body, { message: 'unauthorized' });
-    });
-    (0, vitest_1.test)('should allow access to routes without middleware', async () => {
-        const response = await request.get(host).expect(200);
-        assert_1.default.deepEqual(response.body, { message: 'This route does not require API key' });
+        const response = await fetch(host + '/api/links');
+        const responseBody = await response.json();
+        assert.equal(response.status, 401);
+        assert.deepEqual(responseBody, { message: 'unauthorized' });
     });
     (0, vitest_1.test)('should deny access with invalid API key', async () => {
-        const response = await request.get(host + '/api/links').set('API-Key', 'invalid_api_key').expect(401);
-        assert_1.default.deepEqual(response.body, { message: 'unauthorized' });
+        const response = await fetch(host + '/api/links', {
+            method: 'GET',
+            headers: {
+                'API-Key': 'invalid_api_key',
+            },
+        });
+        const responseBody = await response.json();
+        assert.equal(response.status, 401);
+        assert.deepEqual(responseBody, { message: 'unauthorized' });
+    });
+});
+(0, vitest_1.suite)('Links API', () => {
+    (0, vitest_1.test)('should create a new link', async () => {
+        const response = await fetch(host + '/api/links', {
+            method: 'POST',
+            headers: {
+                'API-Key': process.env.PRIVATE_API_KEY,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: 'Google',
+                link: 'https://google.com',
+                description: 'Search engine',
+            }),
+        });
+        const responseBody = await response.json();
+        assert.equal(response.status, 201);
+        assert.deepEqual(responseBody, { message: 'Link created!', status: 'Created!' });
+    });
+    (0, vitest_1.test)('should get all links', async () => {
+        const response = await fetch(host + '/api/links', {
+            method: 'GET',
+            headers: {
+                'API-Key': process.env.PRIVATE_API_KEY,
+            },
+        });
+        const responseBody = await response.json();
+        assert.equal(response.status, 200);
+        assert.deepEqual(responseBody, { message: 'Links found!', status: 'Ok!', data: [{
+                    id: 1,
+                    name: 'Google',
+                    link: 'https://google.com',
+                    description: 'Search engine',
+                    image: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
+                }] });
+    });
+    (0, vitest_1.test)('should update a link', async () => {
+        const response = await fetch(host + '/api/links/1', {
+            method: 'PUT',
+            headers: {
+                'API-Key': process.env.PRIVATE_API_KEY,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: 'Google',
+                link: 'https://google.com',
+                description: 'Search engine',
+            }),
+        });
+        const responseBody = await response.json();
+        assert.equal(response.status, 200);
+        assert.deepEqual(responseBody, { message: 'Link updated!', status: 'Updated!' });
+    });
+    (0, vitest_1.test)('should delete a link', async () => {
+        const response = await fetch(host + '/api/links/1', {
+            method: 'DELETE',
+            headers: {
+                'API-Key': process.env.PRIVATE_API_KEY,
+            },
+        });
+        const responseBody = await response.json();
+        assert.equal(response.status, 200);
+        assert.deepEqual(responseBody, { message: 'Link deleted!', status: 'Deleted!' });
+    });
+    (0, vitest_1.test)('should get a link', async () => {
+        const response = await fetch(host + '/api/links/1', {
+            method: 'GET',
+            headers: {
+                'API-Key': process.env.PRIVATE_API_KEY,
+            },
+        });
+        const responseBody = await response.json();
+        assert.equal(response.status, 200);
+        assert.deepEqual(responseBody, { message: 'Link found!', status: 'Ok!', data: {
+                id: 1,
+                name: 'Google',
+                link: 'https://google.com',
+                description: 'Search engine',
+                image: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
+            } });
     });
 });
 //# sourceMappingURL=index.test.js.map

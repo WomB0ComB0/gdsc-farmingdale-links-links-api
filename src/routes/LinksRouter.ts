@@ -9,18 +9,21 @@ import { LinksRepo } from '../repository/LinksRepo';
 
 class LinksRouter extends BaseRoutes {
   private readonly apiKeyMiddleware: ReturnType<typeof ApiKeyMiddleware.checkApiKey>;
-  private readonly linksController: LinksController;
+  private linksController: LinksController | null = null;
 
   constructor() {
     super();
-    const db = new Database();
     this.apiKeyMiddleware = ApiKeyMiddleware.checkApiKey();
-    this.linksController = new LinksController(new LinksRepo(db));
     this.routes();
-  } 
-  
-  public routes(): void {
+  }
+
+  public async routes(): Promise<void> {
     try {
+      const db = new Database();
+      await db.createLinksTable();
+
+      this.linksController = new LinksController(new LinksRepo(db));
+
       if (this.linksController) {
         this.router.get("/", this.apiKeyMiddleware, asyncHandler(this.linksController.getLinks));
         this.router.get("/:id([0-9]{1,24})", this.apiKeyMiddleware, asyncHandler(this.linksController.getLink));

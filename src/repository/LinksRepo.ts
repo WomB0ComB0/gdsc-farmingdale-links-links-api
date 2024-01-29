@@ -1,5 +1,4 @@
 import Database from "../config/database";
-import { QueryResult } from "pg";
 
 interface Link {
   id?: number;
@@ -44,7 +43,7 @@ export class LinksRepo implements ILinksRepo{
         text: 'UPDATE links SET name = $1, image = $2, link = $3, description = $4 WHERE id = $5',
         values: [name, image, link, description, id],
       };
-      const result: QueryResult = await this.db.query(updateQuery.text, updateQuery.values);
+      const result = await this.db.query(updateQuery.text, updateQuery.values);
 
       if (result.rowCount === 0) {
         throw new Error("Link not found!");
@@ -60,7 +59,7 @@ export class LinksRepo implements ILinksRepo{
         text: 'DELETE FROM links WHERE id = $1',
         values: [id],
       };
-      const result: QueryResult = await this.db.query(deleteQuery.text, deleteQuery.values);
+      const result = await this.db.query(deleteQuery.text, deleteQuery.values);
 
       if (result.rowCount === 0) {
         throw new Error("Link not found!");
@@ -76,7 +75,7 @@ export class LinksRepo implements ILinksRepo{
         text: 'SELECT * FROM links WHERE id = $1',
         values: [id],
       };
-      const result: QueryResult = await this.db.query(selectQuery.text, selectQuery.values);
+      const result = await this.db.query(selectQuery.text, selectQuery.values);
 
       if (result.rows.length === 0) {
         throw new Error("Link not found!");
@@ -93,7 +92,7 @@ export class LinksRepo implements ILinksRepo{
       const selectQuery = {
         text: 'SELECT * FROM links',
       };
-      const result: QueryResult = await this.db.query(selectQuery.text);
+      const result = await this.db.query(selectQuery.text);
 
       return result.rows;
     } catch (error) {

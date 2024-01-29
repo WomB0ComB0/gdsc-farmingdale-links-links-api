@@ -12,7 +12,7 @@ exports.createLinksSchema = zod_1.z.object({
 });
 exports.updateLinksSchema = zod_1.z.object({
     params: zod_1.z.object({
-        id: zod_1.z.string().uuid(),
+        id: zod_1.z.string(),
     }),
     body: zod_1.z.object({
         image: zod_1.z.string().url(),

@@ -50,6 +50,7 @@ class LinksController {
     async putLink(req, res) {
         try {
             const id = parseInt(req.params['id']);
+            console.log('id', id);
             const { link, name, description } = req.body;
             const image = await this.fetchImageLinkFromURL(link);
             const linkData = {

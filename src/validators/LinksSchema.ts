@@ -11,7 +11,7 @@ export const createLinksSchema = z.object({
 
 export const updateLinksSchema = z.object({
   params: z.object({
-    id: z.string().uuid(),
+    id: z.string(),
   }),
   body: z.object({
     image: z.string().url(),

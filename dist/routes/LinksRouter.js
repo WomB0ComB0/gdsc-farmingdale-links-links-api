@@ -14,13 +14,15 @@ const LinksRepo_1 = require("../repository/LinksRepo");
 class LinksRouter extends BaseRouter_1.default {
     constructor() {
         super();
-        const db = new database_1.default();
+        this.linksController = null;
         this.apiKeyMiddleware = ApiKeyMiddleware_1.default.checkApiKey();
-        this.linksController = new LinksController_1.default(new LinksRepo_1.LinksRepo(db));
         this.routes();
     }
-    routes() {
+    async routes() {
         try {
+            const db = new database_1.default();
+            await db.createLinksTable();
+            this.linksController = new LinksController_1.default(new LinksRepo_1.LinksRepo(db));
             if (this.linksController) {
                 this.router.get("/", this.apiKeyMiddleware, (0, middlewares_1.asyncHandler)(this.linksController.getLinks));
                 this.router.get("/:id([0-9]{1,24})", this.apiKeyMiddleware, (0, middlewares_1.asyncHandler)(this.linksController.getLink));
