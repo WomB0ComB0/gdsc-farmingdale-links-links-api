@@ -10,7 +10,6 @@ class App {
 
   constructor () {
     this.app = express()
-    this.databaseSync()
     this.plugins()
     this.routes()
   }
@@ -25,15 +24,16 @@ class App {
   })
 
   protected routes (): void {
-    this.app.use('/', this.limiter, express.static(this.path))
-    this.app.use('/api/links', this.limiter, LinksRouter)
-    this.app.use(errorHandler)
+    const db = new Database()
+    db.createLinksTable().then(() => {
+      this.app.use('/', this.limiter, express.static(this.path));
+      this.app.use('/api/links', this.limiter, LinksRouter);
+      this.app.use(errorHandler);
+    }).catch((err) => {
+      console.error('⚠️ Unable to create links table', err);
+    });
   }
 
-  protected databaseSync (): void {
-    const db = new Database()
-    db.sequelize?.sync()
-  }
 
   protected plugins (): void {
     this.app.use(express.json())

@@ -1,84 +1,95 @@
-import { Links } from "../models/LinksModel";
+import Database from "../config/database";
+import { QueryResult } from "pg";
 
-interface ILinksRepo {
-  postLink(data: Links): Promise<void>
-  putLink(data: Links): Promise<void>
-  deleteLink(id: number): Promise<void>
-  getLink(id: number): Promise<Links>
-  getLinks(): Promise<Links[]>
+interface Link {
+  id?: number;
+  name: string;
+  image: string;
+  link: string;
+  description: string;
 }
 
-export class LinksRepo implements ILinksRepo {
+export class LinksRepo {
+  private readonly db: Database;
 
-  public async postLink(data: Links): Promise<void> {
+  constructor(db: Database) {
+    this.db = db;
+  }
+
+  public async postLink(data: Link): Promise<void> {
     try {
-      await Links.create({
-        image: data.image,
-        link: data.link,
-        name: data.name,
-        description: data.description
-      });
+      const { name, image, link, description } = data;
+      const insertQuery = {
+        text: 'INSERT INTO links (name, image, link, description) VALUES ($1, $2, $3, $4)',
+        values: [name, image, link, description],
+      };
+      await this.db.query(insertQuery.text, insertQuery.values);
     } catch (error) {
-      throw new Error("Filed to create link!");
+      throw new Error("Failed to create link!");
     }
   }
 
-  public async putLink(data: Links): Promise<void> {
+  public async putLink(data: Link): Promise<void> {
     try {
-      const res = await Links.findOne({
-        where: {
-          id: data.id
-        }
-      });
-      if (!res) {
+      const { id, name, image, link, description } = data;
+      const updateQuery = {
+        text: 'UPDATE links SET name = $1, image = $2, link = $3, description = $4 WHERE id = $5',
+        values: [name, image, link, description, id],
+      };
+      const result: QueryResult = await this.db.query(updateQuery.text, updateQuery.values);
+
+      if (result.rowCount === 0) {
         throw new Error("Link not found!");
       }
-      res.image = data.image
-      res.link = data.link
-      res.name = data.name
-      res.description = data.description
     } catch (error) {
-      throw new Error("Filed to update link!");
+      throw new Error("Failed to update link!");
     }
   }
 
   public async deleteLink(id: number): Promise<void> {
     try {
-      const res = await Links.findOne({
-        where: {
-          id: id
-        }
-      });
-      if (!res) {
+      const deleteQuery = {
+        text: 'DELETE FROM links WHERE id = $1',
+        values: [id],
+      };
+      const result: QueryResult = await this.db.query(deleteQuery.text, deleteQuery.values);
+
+      if (result.rowCount === 0) {
         throw new Error("Link not found!");
       }
-      await res.destroy();
     } catch (error) {
-      throw new Error("Filed to delete link!");
+      throw new Error("Failed to delete link!");
     }
   }
 
-  public async getLink(id: number): Promise<Links> {
+  public async getLink(id: number): Promise<Link> {
     try {
-      const res = await Links.findOne({
-        where: {
-          id: id
-        }
-      });
-      if (!res) {
+      const selectQuery = {
+        text: 'SELECT * FROM links WHERE id = $1',
+        values: [id],
+      };
+      const result: QueryResult = await this.db.query(selectQuery.text, selectQuery.values);
+
+      if (result.rows.length === 0) {
         throw new Error("Link not found!");
       }
-      return res;
+
+      return result.rows[0];
     } catch (error) {
-      throw new Error("Filed to retrieve link!");
+      throw new Error("Failed to retrieve link!");
     }
   }
 
-  public async getLinks(): Promise<Links[]> {
+  public async getLinks(): Promise<Link[]> {
     try {
-      return await Links.findAll();
+      const selectQuery = {
+        text: 'SELECT * FROM links',
+      };
+      const result: QueryResult = await this.db.query(selectQuery.text);
+
+      return result.rows;
     } catch (error) {
-      throw new Error("Filed to retrieve links!");
+      throw new Error("Failed to retrieve links!");
     }
   }
 }

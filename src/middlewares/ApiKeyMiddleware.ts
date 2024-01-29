@@ -1,7 +1,8 @@
-import { type Request, type Response, type NextFunction } from 'express'
+import { type Request, type Response, type NextFunction, RequestHandler } from 'express'
 
 export class ApiKeyMiddleware {
-    public checkApiKey = () => {
+    private constructor() {}
+    public static checkApiKey = (): RequestHandler => {
         return async (req: Request, res: Response, next: NextFunction) => {
             const apiKey = req.get('API-Key')
             if (!apiKey || apiKey !== process.env.PRIVATE_API_KEY) {
