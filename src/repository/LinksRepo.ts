@@ -9,7 +9,15 @@ interface Link {
   description: string;
 }
 
-export class LinksRepo {
+interface ILinksRepo {
+  postLink(data: Link): Promise<void>;
+  putLink(data: Link): Promise<void>;
+  deleteLink(id: number): Promise<void>;
+  getLink(id: number): Promise<Link>;
+  getLinks(): Promise<Link[]>;
+}
+
+export class LinksRepo implements ILinksRepo{
   private readonly db: Database;
 
   constructor(db: Database) {

@@ -1,5 +1,6 @@
 import { Pool } from "pg";
-
+import * as dotenv from "dotenv";
+dotenv.config();
 interface Link {
   id?: number;
   name: string;
@@ -54,6 +55,7 @@ class Database {
     }
   }
 
+  // Unused
   public async sendLinksTable(links: Link[]): Promise<void> {
     try {
       await this.createLinksTable();

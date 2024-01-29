@@ -14,15 +14,14 @@ class App {
     this.routes()
   }
 
-  private readonly path = join(__dirname, '..', '..', 'static')
-
+  private readonly path = join(__dirname, '..', 'static')
   private readonly limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
 	  limit: 100,
 	  standardHeaders: 'draft-7',
 	  legacyHeaders: false,
   })
-
+  
   protected routes (): void {
     const db = new Database()
     db.createLinksTable().then(() => {

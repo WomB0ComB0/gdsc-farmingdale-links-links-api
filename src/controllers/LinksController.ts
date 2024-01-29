@@ -1,13 +1,17 @@
 import ogs from 'open-graph-scraper';
 import { userAgent } from '../constants';
 import { Request, Response } from "express";
-import Database from "../config/database";
 import { LinksRepo } from "../repository/LinksRepo";
 class LinksController {
   private readonly linksRepo: LinksRepo;
 
   constructor(linksRepo: LinksRepo) {
     this.linksRepo = linksRepo;
+    this.postLink = this.postLink.bind(this);
+    this.putLink = this.putLink.bind(this);
+    this.deleteLink = this.deleteLink.bind(this);
+    this.getLink = this.getLink.bind(this);
+    this.getLinks = this.getLinks.bind(this);
   }
 
   private async fetchImageLinkFromURL(url: string): Promise<string> {
@@ -104,5 +108,4 @@ class LinksController {
   }
 }
 
-const db = new Database();
-export default new LinksController(new LinksRepo(db));
+export default LinksController;

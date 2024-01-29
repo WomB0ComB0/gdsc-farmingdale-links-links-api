@@ -4,8 +4,8 @@ export const createLinksSchema = z.object({
   body: z.object({
     image: z.string().url(),
     link: z.string().url(),
-    name: z.string().min(5).max(10),
-    description: z.string().min(5).max(10),
+    name: z.string().min(5),
+    description: z.string().min(5),
   }),
 });
 
@@ -16,7 +16,7 @@ export const updateLinksSchema = z.object({
   body: z.object({
     image: z.string().url(),
     link: z.string().url(),
-    name: z.string().min(5).max(10),
-    description: z.string().min(5).max(10),
+    name: z.string().min(5),
+    description: z.string().min(5),
   }),
 });
