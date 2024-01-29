@@ -28,10 +28,10 @@ class LinksRouter extends BaseRoutes {
         this.router.put("/:id([0-9]{1,24})", validate(updateLinksSchema), asyncHandler(this.linksController.putLink));
         this.router.delete("/:id([0-9]{1,24})", asyncHandler(this.linksController.deleteLink));
       } else {
-        console.error('⚠️ Unable to initialize links controller');
+        throw new Error("⚠️ Unable to initialize LinksController");
       }
     } catch (error) {
-      console.error('Error configuring routes:', error);
+      console.error("⚠️ Unable to initialize LinksRouter", error);
     }
   }
 }

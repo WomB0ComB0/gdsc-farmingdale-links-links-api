@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const express_rate_limit_1 = require("express-rate-limit");
 const path_1 = require("path");
@@ -11,7 +12,7 @@ const LinksRouter_1 = __importDefault(require("./routes/LinksRouter"));
 const middlewares_1 = require("./middlewares");
 class App {
     constructor() {
-        this.path = (0, path_1.join)(__dirname, '..', '..', 'static');
+        this.path = (0, path_1.join)(__dirname, '..', 'static');
         this.limiter = (0, express_rate_limit_1.rateLimit)({
             windowMs: 15 * 60 * 1000,
             limit: 100,
@@ -45,8 +46,8 @@ class App {
     }
 }
 const port = 3000;
-const app = new App().app;
-app.listen(port, () => {
+exports.app = new App().app;
+exports.app.listen(port, () => {
     console.log('✅ Server started successfully!');
 });
 //# sourceMappingURL=index.js.map

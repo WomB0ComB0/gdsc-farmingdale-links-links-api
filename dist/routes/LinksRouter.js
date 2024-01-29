@@ -17,15 +17,24 @@ class LinksRouter extends BaseRouter_1.default {
         const db = new database_1.default();
         this.apiKeyMiddleware = ApiKeyMiddleware_1.default.checkApiKey();
         this.linksController = new LinksController_1.default(new LinksRepo_1.LinksRepo(db));
-        console.log('LinksRouter constructor', this.linksController.getLinks);
         this.routes();
     }
     routes() {
-        this.router.get("/", this.apiKeyMiddleware, (0, middlewares_1.asyncHandler)(this.linksController.getLinks));
-        this.router.get("/:id([0-9]{1,24})", this.apiKeyMiddleware, (0, middlewares_1.asyncHandler)(this.linksController.getLink));
-        this.router.post("/", (0, validate_1.default)(LinksSchema_1.createLinksSchema), (0, middlewares_1.asyncHandler)(this.linksController.postLink));
-        this.router.put("/:id([0-9]{1,24})", (0, validate_1.default)(LinksSchema_1.updateLinksSchema), (0, middlewares_1.asyncHandler)(this.linksController.putLink));
-        this.router.delete("/:id([0-9]{1,24})", (0, middlewares_1.asyncHandler)(this.linksController.deleteLink));
+        try {
+            if (this.linksController) {
+                this.router.get("/", this.apiKeyMiddleware, (0, middlewares_1.asyncHandler)(this.linksController.getLinks));
+                this.router.get("/:id([0-9]{1,24})", this.apiKeyMiddleware, (0, middlewares_1.asyncHandler)(this.linksController.getLink));
+                this.router.post("/", (0, validate_1.default)(LinksSchema_1.createLinksSchema), (0, middlewares_1.asyncHandler)(this.linksController.postLink));
+                this.router.put("/:id([0-9]{1,24})", (0, validate_1.default)(LinksSchema_1.updateLinksSchema), (0, middlewares_1.asyncHandler)(this.linksController.putLink));
+                this.router.delete("/:id([0-9]{1,24})", (0, middlewares_1.asyncHandler)(this.linksController.deleteLink));
+            }
+            else {
+                throw new Error("⚠️ Unable to initialize LinksController");
+            }
+        }
+        catch (error) {
+            console.error("⚠️ Unable to initialize LinksRouter", error);
+        }
     }
 }
 exports.default = new LinksRouter().router;

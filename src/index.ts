@@ -49,7 +49,7 @@ class App {
 }
 
 const port: number = 3000
-const app = new App().app
+export const app = new App().app
 
 app.listen(port, () => {
   console.log('✅ Server started successfully!')

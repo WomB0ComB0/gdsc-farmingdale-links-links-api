@@ -97,7 +97,6 @@ class LinksController {
     async getLinks(_req, res) {
         try {
             const links = await this.linksRepo.getLinks();
-            console.log(links);
             res.status(200).json({ status: "Ok!", message: "Links found!", data: links });
         }
         catch (error) {
