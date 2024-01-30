@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsc",
+    "start": "node --env-file=.env dist/index.js",
     "dev": "nodemon src/index.ts",
-    "start": "rimraf dist && tsc && node --env-file=.env dist/index.js",
     "eslint": "eslint . --fix --ext  .ts",
     "prettier": "prettier --write --config .prettierrc.json \"src/**/*.ts\"",
     "test": "vitest"
