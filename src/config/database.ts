@@ -37,7 +37,6 @@ class Database {
   }
   public async createLinksTable(): Promise<void> {
     const createTableQuery = `
-      DROP TABLE IF EXISTS links;
       CREATE TABLE IF NOT EXISTS links (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
@@ -55,7 +54,6 @@ class Database {
     }
   }
 
-  // Unused
   public async sendLinksTable(links: Link[]): Promise<void> {
     try {
       await this.createLinksTable();

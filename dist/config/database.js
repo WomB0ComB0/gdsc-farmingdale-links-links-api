@@ -52,7 +52,6 @@ class Database {
     }
     async createLinksTable() {
         const createTableQuery = `
-      DROP TABLE IF EXISTS links;
       CREATE TABLE IF NOT EXISTS links (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,

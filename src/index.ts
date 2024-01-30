@@ -1,7 +1,6 @@
 import express, { type Application, type NextFunction, type Request, type Response } from 'express'
 import { rateLimit } from 'express-rate-limit'
 import { join } from 'path'
-import Database from './config/database'
 import LinksRouter from './routes/LinksRouter'
 import { errorHandler } from './middlewares'
 
@@ -23,14 +22,9 @@ class App {
   })
   
   protected routes (): void {
-    const db = new Database()
-    db.createLinksTable().then(() => {
       this.app.use('/', this.limiter, express.static(this.path));
       this.app.use('/api/links', this.limiter, LinksRouter);
       this.app.use(errorHandler);
-    }).catch((err) => {
-      console.error('⚠️ Unable to create links table', err);
-    });
   }
 
 

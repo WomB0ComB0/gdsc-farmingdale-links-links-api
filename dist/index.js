@@ -7,7 +7,6 @@ exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const express_rate_limit_1 = require("express-rate-limit");
 const path_1 = require("path");
-const database_1 = __importDefault(require("./config/database"));
 const LinksRouter_1 = __importDefault(require("./routes/LinksRouter"));
 const middlewares_1 = require("./middlewares");
 class App {
@@ -24,14 +23,9 @@ class App {
         this.routes();
     }
     routes() {
-        const db = new database_1.default();
-        db.createLinksTable().then(() => {
-            this.app.use('/', this.limiter, express_1.default.static(this.path));
-            this.app.use('/api/links', this.limiter, LinksRouter_1.default);
-            this.app.use(middlewares_1.errorHandler);
-        }).catch((err) => {
-            console.error('⚠️ Unable to create links table', err);
-        });
+        this.app.use('/', this.limiter, express_1.default.static(this.path));
+        this.app.use('/api/links', this.limiter, LinksRouter_1.default);
+        this.app.use(middlewares_1.errorHandler);
     }
     plugins() {
         this.app.use(express_1.default.json());
