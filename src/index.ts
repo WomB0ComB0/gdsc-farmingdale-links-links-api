@@ -31,11 +31,26 @@ class App {
   protected plugins (): void {
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
+        // Handle CORS preflight requests
+        this.app.options('/api/links', (_req: Request, res: Response) => {
+            res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+            res.header('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+            res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key, Authorization');
+            res.header('Access-Control-Allow-Credentials', 'true');
+            res.status(200).send();
+        });
+
+        // Middleware to set CORS headers for other requests
+        this.app.use((_req: Request, res: Response, next: NextFunction) => {
+            res.header('Access-Control-Allow-Origin', 'https://gdsc-fsc-l.web.app');
+            res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key, Authorization');
+            next();
+        });
   }
 
   protected headers (): void {
     this.app.use(function (_req: Request, res: Response, next: NextFunction) {
-      res.header('Access-Control-Allow-Origin', '*')
+      res.header('Access-Control-Allow-Origin', 'https://gdsc-fsc-l.web.app')
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key')
       next()
     })
