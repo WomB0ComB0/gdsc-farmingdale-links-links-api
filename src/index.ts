@@ -4,6 +4,10 @@ import { join } from 'path'
 import LinksRouter from './routes/LinksRouter'
 import { errorHandler } from './middlewares'
 
+const origin = process.env.NODE_ENV === 'production' 
+  ? 'https://gdsc-fsc-l.web.app' 
+  : 'http://localhost:5173';
+
 class App {
   public app: Application
 
@@ -33,7 +37,7 @@ class App {
     this.app.use(express.urlencoded({ extended: true }))
         // Handle CORS preflight requests
         this.app.options('/api/links', (_req: Request, res: Response) => {
-            res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+            res.header('Access-Control-Allow-Origin', origin);
             res.header('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
             res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key, Authorization');
             res.header('Access-Control-Allow-Credentials', 'true');
@@ -42,7 +46,7 @@ class App {
 
         // Middleware to set CORS headers for other requests
         this.app.use((_req: Request, res: Response, next: NextFunction) => {
-            res.header('Access-Control-Allow-Origin', 'https://gdsc-fsc-l.web.app');
+            res.header('Access-Control-Allow-Origin', origin);
             res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key, Authorization');
             next();
         });
@@ -50,7 +54,7 @@ class App {
 
   protected headers (): void {
     this.app.use(function (_req: Request, res: Response, next: NextFunction) {
-      res.header('Access-Control-Allow-Origin', 'https://gdsc-fsc-l.web.app')
+      res.header('Access-Control-Allow-Origin', origin)
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key')
       next()
     })
