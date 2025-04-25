@@ -8,6 +8,9 @@ const express_rate_limit_1 = require("express-rate-limit");
 const path_1 = require("path");
 const LinksRouter_1 = __importDefault(require("./routes/LinksRouter"));
 const middlewares_1 = require("./middlewares");
+const origin = process.env.NODE_ENV === 'production'
+    ? 'https://gdsc-fsc-l.web.app'
+    : 'http://localhost:5173';
 class App {
     constructor() {
         this.path = (0, path_1.join)(__dirname, '..', 'static');
@@ -30,21 +33,21 @@ class App {
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.urlencoded({ extended: true }));
         this.app.options('/api/links', (_req, res) => {
-            res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+            res.header('Access-Control-Allow-Origin', origin);
             res.header('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
             res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key, Authorization');
             res.header('Access-Control-Allow-Credentials', 'true');
             res.status(200).send();
         });
         this.app.use((_req, res, next) => {
-            res.header('Access-Control-Allow-Origin', 'https://gdsc-fsc-l.web.app');
+            res.header('Access-Control-Allow-Origin', origin);
             res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key, Authorization');
             next();
         });
     }
     headers() {
         this.app.use(function (_req, res, next) {
-            res.header('Access-Control-Allow-Origin', 'https://gdsc-fsc-l.web.app');
+            res.header('Access-Control-Allow-Origin', origin);
             res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key');
             next();
         });
