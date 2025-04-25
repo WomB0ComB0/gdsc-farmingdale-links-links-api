@@ -58,8 +58,16 @@ class App {
 }
 
 const port: number = 3000
-export const app = new App().app
+const app = new App().app
 
-app.listen(port, () => {
-  console.log('✅ Server started successfully!')
-})
+if (process.env.NODE_ENV === 'production') {
+  app.listen(port, () => {
+    console.log('✅ Server started successfully!')
+  })
+} else {
+  app.listen(port, () => {
+    console.log(`✅ Server started successfully! http://localhost:${port}`)
+  })
+}
+
+export default app

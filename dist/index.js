@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const express_rate_limit_1 = require("express-rate-limit");
 const path_1 = require("path");
@@ -30,18 +29,38 @@ class App {
     plugins() {
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.urlencoded({ extended: true }));
+        this.app.options('/api/links', (_req, res) => {
+            res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+            res.header('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+            res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key, Authorization');
+            res.header('Access-Control-Allow-Credentials', 'true');
+            res.status(200).send();
+        });
+        this.app.use((_req, res, next) => {
+            res.header('Access-Control-Allow-Origin', 'https://gdsc-fsc-l.web.app');
+            res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key, Authorization');
+            next();
+        });
     }
     headers() {
         this.app.use(function (_req, res, next) {
-            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Origin', 'https://gdsc-fsc-l.web.app');
             res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, API-Key');
             next();
         });
     }
 }
 const port = 3000;
-exports.app = new App().app;
-exports.app.listen(port, () => {
-    console.log('✅ Server started successfully!');
-});
+const app = new App().app;
+if (process.env.NODE_ENV === 'production') {
+    app.listen(port, () => {
+        console.log('✅ Server started successfully!');
+    });
+}
+else {
+    app.listen(port, () => {
+        console.log(`✅ Server started successfully! http://localhost:${port}`);
+    });
+}
+exports.default = app;
 //# sourceMappingURL=index.js.map
